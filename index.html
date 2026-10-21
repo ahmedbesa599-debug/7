@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BESA - RODY</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','SF Arabic',system-ui!important;-webkit-font-smoothing:antialiased}
+body{background:#000;overflow:hidden;color:#fff;min-height:100vh;min-height:100dvh}
+canvas{position:fixed;inset:0;z-index:0}
+#hearts{position:fixed;inset:0;z-index:4;pointer-events:none}
+.heart{position:absolute;animation:fh var(--d) linear forwards}
+@keyframes fh{0%{transform:translateY(110vh) translateX(0) scale(0) rotate(0deg);opacity:0}12%{opacity:1}100%{transform:translateY(-20vh) translateX(var(--x)) scale(1.9) rotate(400deg);opacity:0}}
+#counter{position:fixed;top:16px;left:50%;transform:translateX(-50%) scale(.92);z-index:90;display:flex;gap:12px;align-items:center;background:rgba(20,20,22,.72);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);border:.5px solid rgba(255,255,255,.16);padding:9px 20px;border-radius:100px;opacity:0;transition:1.2s cubic-bezier(.16,1,.3,1)}#counter.show{opacity:1;transform:translateX(-50%) scale(1)}
+.cx{display:flex;flex-direction:column;align-items:center;min-width:40px}.cn{font-weight:700;font-size:17px;letter-spacing:-.6px}.cl{font-size:7.5px;font-weight:700;letter-spacing:1.4px;color:rgba(255,255,255,.42);margin-top:2px}.dot{width:3px;height:3px;background:rgba(255,255,255,.25);border-radius:50%}
+#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% 45%,rgba(255,42,109,.22),transparent 60%),radial-gradient(800px 400px at 50% 100%,rgba(120,60,255,.18),transparent);transition:1.2s}
+.names{display:flex;gap:22px;align-items:center;justify-content:center;direction:ltr}
+.n{font-size:clamp(36px,8vw,72px);font-weight:200;letter-spacing:12px;display:flex;gap:2px;filter:drop-shadow(0 0 18px rgba(255,42,109,.9)) drop-shadow(0 0 70px rgba(255,42,109,.6));color:#fff;font-family:-apple-system,'SF Pro Display',sans-serif!important}
+.n span{display:inline-block;opacity:0;transform:translateY(90px) rotateX(-80deg) scale(.6);filter:blur(14px);transition:1.2s cubic-bezier(.16,1,.3,1)}
+.n span.ok{opacity:1;transform:none;filter:blur(0)}
+.dash{font-size:32px;font-weight:200;color:#ff2a6d;opacity:0;transform:scale(.5);transition:1s .9s;text-shadow:0 0 30px #ff2a6d}.dash.ok{opacity:1;transform:scale(1)}
+#since{margin-top:20px;font-size:11px;font-weight:600;letter-spacing:8px;color:rgba(255,255,255,.38);opacity:0;transform:translateY(10px);transition:1s 1.7s;direction:ltr}#since.ok{opacity:1;transform:none}
+#line{width:0;height:1px;background:linear-gradient(90deg,transparent,#ff2a6d,transparent);margin:22px auto 0;transition:1.2s 2s}#line.ok{width:180px}
+#tapWrap{margin-top:34px;opacity:0;transform:translateY(16px);transition:1s 2.3s}#tapWrap.ok{opacity:1;transform:none}
+#tap{padding:15px 32px;border-radius:100px;background:#fff;color:#000;font-weight:700;font-size:14.5px;border:none;cursor:pointer;box-shadow:0 12px 40px rgba(255,255,255,.22)}#tap:active{transform:scale(.96)}
+#main{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:0 18px 90px;display:none;opacity:0;transition:1s}#main.show{display:block;opacity:1}
+.hero{padding:130px 0 24px;text-align:center;direction:ltr}.hero h1{font-size:clamp(28px,6vw,48px);font-weight:200;letter-spacing:12px;text-shadow:0 0 30px #ff2a6d;font-family:-apple-system,'SF Pro Display',sans-serif!important}.hero p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.45)}
+#loveBox{margin:26px auto 0;background:rgba(22,22,24,.7);backdrop-filter:blur(36px) saturate(200%);-webkit-backdrop-filter:blur(36px) saturate(200%);border:.5px solid rgba(255,255,255,.14);border-radius:28px;padding:26px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(20px) scale(.98);opacity:0;transition:1s}#loveBox.show{transform:none;opacity:1}
+#loveBox h2{font-size:20px;font-weight:700}#loveBox p{margin-top:6px;font-size:13px;color:rgba(255,255,255,.55)}
+#openReasons{margin-top:18px;width:100%;padding:16px;border-radius:16px;background:linear-gradient(180deg,#ff2a6d,#d9144e);border:none;color:#fff;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 10px 30px rgba(255,42,109,.45)}#openReasons:active{transform:scale(.98)}
+#listWrap{display:none;margin-top:18px}#listWrap.open{display:block}
+.card{background:rgba(18,18,20,.78);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border:.5px solid rgba(255,255,255,.11);border-radius:18px;padding:15px 16px;margin-bottom:11px;display:flex;gap:12px;align-items:flex-start;opacity:0;transform:translateY(24px) scale(.97);filter:blur(10px);transition:.85s cubic-bezier(.16,1,.3,1)}.card.in{opacity:1;transform:none;filter:blur(0)}
+.num{font-size:12px;font-weight:800;color:#ff2a6d;min-width:34px;margin-top:2px}.txt{font-size:14.8px;line-height:1.65;font-weight:400;flex:1}.e{width:20px;height:20px;vertical-align:middle}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="hearts"></div>
+<div id="yt" style="position:fixed;top:-200px;opacity:.01;width:1px;height:1px"></div>
+<div id="counter"><div class="cx"><div class="cn" id="d">0</div><div class="cl">DAYS</div></div><div class="dot"></div><div class="cx"><div class="cn" id="h">00</div><div class="cl">HOURS</div></div><div class="dot"></div><div class="cx"><div class="cn" id="m">00</div><div class="cl">MINS</div></div><div class="dot"></div><div class="cx"><div class="cn" id="s">00</div><div class="cl">SECS</div></div></div>
+<div id="intro">
+  <div class="names"><div class="n" id="b"></div><div class="dash" id="dash">—</div><div class="n" id="r"></div></div>
+  <div id="since">SINCE 01 • 09 • 2025</div>
+  <div id="line"></div>
+  <div id="tapWrap"><button id="tap">Tap to feel us 🤍</button></div>
+</div>
+<div id="main">
+  <div class="hero"><h1>B E S A — R O D Y</h1><p>OUR LITTLE UNIVERSE</p></div>
+  <div id="loveBox"><h2>حبيتك ليه يارودينا ؟ <img class="e" src="https://emojicdn.elk.sh/👸🏻?style=apple"></h2><p>100 سبب يخلوني أموت فيكي كل يوم أكتر</p><button id="openReasons">افتحي قلبي وشوفي <img class="e" src="https://emojicdn.elk.sh/💗?style=apple"></button></div>
+  <div id="listWrap"><div id="list"></div></div>
+</div>
+<script>
+const cv=document.getElementById('bg'),cx=cv.getContext('2d');function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
+let stars=[];for(let i=0;i<350;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.6+.2,s:Math.random()*.6+.15,a:Math.random()});
+(function loop(){cx.clearRect(0,0,cv.width,cv.height);for(let s of stars){s.y+=s.s;if(s.y>cv.height){s.y=0;s.x=Math.random()*cv.width}cx.globalAlpha=.5;cx.fillStyle=`rgba(255,${130+Math.random()*70},${140+Math.random()*80},1)`;cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fill()}requestAnimationFrame(loop)})();
+const hb=document.getElementById('hearts');function heart(){const im=document.createElement('img');im.className='heart';const vs=['❤️','💖','💗','💓','💞','💘','👸🏻','🤍'];im.src=`https://emojicdn.elk.sh/${encodeURIComponent(vs[Math.random()*vs.length|0])}?style=apple`;im.style.left=Math.random()*100+'vw';im.style.setProperty('--x',(Math.random()-.5)*380+'px');im.style.setProperty('--d',(5+Math.random()*4)+'s');const sz=16+Math.random()*30;im.style.width=sz+'px';im.style.height=sz+'px';hb.appendChild(im);setTimeout(()=>im.remove(),9000)}
+// هنا التصحيح النهائي للاسم
+const bEl=document.getElementById('b'), rEl=document.getElementById('r');
+['B','E','S','A'].forEach((c,i)=>{const s=document.createElement('span');s.textContent=c;bEl.appendChild(s);setTimeout(()=>s.classList.add('ok'),260+i*110)});
+['R','O','D','Y'].forEach((c,i)=>{const s=document.createElement('span');s.textContent=c;rEl.appendChild(s);setTimeout(()=>s.classList.add('ok'),980+i*110)});
+setTimeout(()=>document.getElementById('dash').classList.add('ok'),820);
+setTimeout(()=>document.getElementById('since').classList.add('ok'),1700);
+setTimeout(()=>document.getElementById('line').classList.add('ok'),1900);
+setTimeout(()=>document.getElementById('tapWrap').classList.add('ok'),2200);
+const start=new Date('2025-09-01T00:00:00');function upd(){const d=Date.now()-start;document.getElementById('d').textContent=Math.floor(d/86400000);document.getElementById('h').textContent=String(Math.floor(d/3600000)%24).padStart(2,'0');document.getElementById('m').textContent=String(Math.floor(d/60000)%60).padStart(2,'0');document.getElementById('s').textContent=String(Math.floor(d/1000)%60).padStart(2,'0')}setInterval(upd,1000);upd();
+let yt,ready=false;var tag=document.createElement('script');tag.src="https://www.youtube.com/iframe_api";document.head.appendChild(tag);
+window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('yt',{videoId:'ZLhWlUFmGMA',playerVars:{start:43,autoplay:0,loop:1,playlist:'ZLhWlUFmGMA',controls:0,playsinline:1},events:{onReady:()=>ready=true}})}
+const reasons=[`حبيتڪ ؏ لقيت فيڪي الحاجه ﺎللي ملقتهاش ف اۍ بنت`,`حبيتڪ ؏ عمࢪي فـ يوم م فڪࢪت ازعل منڪ`,`حبيتڪ ؏ عيونڪ الحلوين دول`,`حبيتڪ ؏ ضحڪتك اللي لما بسمـ؏ـها يومۍ بيبقي حاجه تانيه`,`حبيتڪ ؏ حبيت الڪلام معاڪي من اول م ڪلمتك`,`حبيتڪ ؏ مشوفتش اجد؏ منڪ`,`حبيتڪ ؏ عمࢪي م هلاقۍ ف جمالك`,`حبيتڪ ؏ خليتڪ معايا ؏ الحلوه و؏ المࢪه`,`حبيتڪ ؏ غيࢪتڪ عليا اللي بتثبتلي انڪ بتحبيني بجد`,`حبيتڪ ؏ انتي بيتي اللي بࢪتاح فيه`,`حبيتڪ ؏ صوتڪ بيطمني`,`حبيتڪ ؏ بتفهميني من نظره`,`حبيتڪ ؏ ايدڪ لما بتمسڪ ايدي`,`حبيتڪ ؏ بتستحمليني`,`حبيتڪ ؏ دماغڪ اللي برتاح ف الڪلام معاها`,`حبيتڪ ؏ ريحة برفانڪ`,`حبيتڪ ؏ بتشيليني وقت الزعل`,`حبيتڪ ؏ شڪلڪ وانتۍ نايمه`,`حبيتڪ ؏ مستقبلنا اللي برسمه معاڪي`,`حبيتڪ ؏ انتي وطني`,`حبيتڪ ؏ بتخلي اليوم الحلو احلى`,`حبيتڪ ؏ بتهوني عليا اليوم الوحش`,`حبيتڪ ؏ بتشجعيني`,`حبيتڪ ؏ بتقوليلي الحق حتي لو هيزعلني`,`حبيتڪ ؏ جنانڪ`,`حبيتڪ ؏ عقلڪ`,`حبيتڪ ؏ قلبڪ الطيب`,`حبيتڪ ؏ شقاوتڪ`,`حبيتڪ ؏ خوفڪ عليا`,`حبيتڪ ؏ اهتمامڪ بيا`,`حبيتڪ ؏ بتعملي قهوه`,`حبيتڪ ؏ بتسمعيني للصبح`,`حبيتڪ ؏ بتصالحيني`,`حبيتڪ ؏ بتفرحي بحاجتي الصغيره`,`حبيتڪ ؏ بتحلمي معايا`,`حبيتڪ ؏ اسمڪ`,`حبيتڪ ؏ شعرڪ`,`حبيتڪ ؏ وشڪ`,`حبيتڪ ؏ تفاصيلڪ`,`حبيتڪ ؏ ڪلڪ`,`حبيتڪ ؏ بتخليني احسن`,`حبيتڪ ؏ بتديني امل`,`حبيتڪ ؏ بتقولي انا معاڪ`,`حبيتڪ ؏ حضنڪ ف الڪلام`,`حبيتڪ ؏ بتستنيني`,`حبيتڪ ؏ بتختاريني ڪل يوم`,`حبيتڪ ؏ بتسامحيني`,`حبيتڪ ؏ بتفڪريني بنفسي`,`حبيتڪ ؏ بتعمليلي حاجات مخصوص`,`حبيتڪ ؏ عشانڪ انتي`,`حبيتڪ ؏ بتضحڪي علي نڪتي البايخه`,`حبيتڪ ؏ بتغيري الموضوع لما ازعل`,`حبيتڪ ؏ بتقولي خد بالڪ من نفسڪ`,`حبيتڪ ؏ بتطمني اهلي عليا`,`حبيتڪ ؏ بتحبي نفس اللي بحبه`,`حبيتڪ ؏ بتصلي`,`حبيتڪ ؏ تعرفي ربنا`,`حبيتڪ ؏ بتستحملي رغيي`,`حبيتڪ ؏ بتفرحي لفرحي`,`حبيتڪ ؏ بتعيطي لزعلي`,`حبيتڪ ؏ بتلوني يومي`,`حبيتڪ ؏ بتخلي قلبي يدق`,`حبيتڪ ؏ بتخليني اتلهف عليڪي`,`حبيتڪ ؏ وحشتڪ بتوجع`,`حبيتڪ ؏ وجودڪ فارق`,`حبيتڪ ؏ غيابڪ بيعلمني`,`حبيتڪ ؏ رجوعڪ عيد`,`حبيتڪ ؏ وعدڪ`,`حبيتڪ ؏ ڪلامڪ الصادق`,`حبيتڪ ؏ عينڪ اللي بتطمن`,`حبيتڪ ؏ ايدڪ الحنينه`,`حبيتڪ ؏ صبرڪ عليا`,`حبيتڪ ؏ بتشوفيني احسن واحد`,`حبيتڪ ؏ بتقولي فخوره بيڪ`,`حبيتڪ ؏ بتحاربي عشاني`,`حبيتڪ ؏ بتقفي ف ضهري`,`حبيتڪ ؏ سرڪ معايا`,`حبيتڪ ؏ سره معاڪي`,`حبيتڪ ؏ احلامنا سوا`,`حبيتڪ ؏ بيتنا اللي لسه هنبنيه`,`حبيتڪ ؏ عيالنا اللي ف بالي`,`حبيتڪ ؏ اسمهم اللي اخترناه`,`حبيتڪ ؏ دعواتڪ ليا`,`حبيتڪ ؏ ربنا جمعنا`,`حبيتڪ ؏ نصيبي`,`حبيتڪ ؏ قسمتي`,`حبيتڪ ؏ رزقي`,`حبيتڪ ؏ نعمتي`,`حبيتڪ ؏ هديه ربنا ليا`,`حبيتڪ ؏ معجزه ف حياتي`,`حبيتڪ ؏ بتخليني اتمني ابقي قدڪ`,`حبيتڪ ؏ بتخليني عايز ابقي راجل قد ڪلمتي`,`حبيتڪ ؏ بتخليني احب نفسي`,`حبيتڪ ؏ علمتيني الحب`,`حبيتڪ ؏ علمتيني الوفاء`,`حبيتڪ ؏ علمتيني يعني ايه امان`,`حبيتڪ ؏ علمتيني يعني ايه بيت`,`حبيتڪ ؏ علمتيني يعني ايه عيله`,`حبيتڪ ؏ علمتيني يعني ايه احب بجد`,`حبيتڪ ؏ ببساطه... عشانڪ انتي`];
+const list=document.getElementById('list');reasons.forEach((t,i)=>{const c=document.createElement('div');c.className='card';const num=document.createElement('div');num.className='num';num.textContent=String(i+1).padStart(3,'0');const txt=document.createElement('div');txt.className='txt';txt.textContent=t;const im=document.createElement('img');im.className='e';im.src='https://emojicdn.elk.sh/💗?style=apple';im.style.marginRight='6px';txt.appendChild(im);c.appendChild(num);c.appendChild(txt);list.appendChild(c)});
+document.getElementById('tap').onclick=()=>{if(ready&&yt){yt.seekTo(43,true);yt.setVolume(90);yt.playVideo()}setInterval(heart,65);document.getElementById('counter').classList.add('show');const intro=document.getElementById('intro');intro.style.transform='scale(1.25)';intro.style.opacity='0';setTimeout(()=>{intro.style.display='none';document.body.style.overflow='auto';document.getElementById('main').style.display='block';requestAnimationFrame(()=>{document.getElementById('main').classList.add('show');document.getElementById('loveBox').classList.add('show')})},900)};
+document.getElementById('openReasons').onclick=()=>{const w=document.getElementById('listWrap');w.classList.add('open');w.style.display='block';document.getElementById('openReasons').textContent='قلبي كله ليكي 👸🏻';const cards=document.querySelectorAll('.card');const io=new IntersectionObserver(ents=>{ents.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.12});cards.forEach((c,i)=>{io.observe(c);setTimeout(()=>c.classList.add('in'),i*45)});setTimeout(()=>{w.scrollIntoView({behavior:'smooth'})},200)};
+</script>
+</body>
+</html>
